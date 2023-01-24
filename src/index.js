@@ -35,7 +35,7 @@ app.delete('/api/project/:name', (req, res, next) => {
 
 	res.status(200).send('success');
 })
-app.post('/api/chapter/:id', chapterUpload.array('images', 10), (req, res) => {
+app.post('/api/chapter/:id', chapterUpload.single('image'), (req, res) => {
 	const image = req.file;
 	const imageId = parseInt(req.params.id);
 	const url = `${process.env.HOST}:${process.env.PORT}/${image.path}`;
