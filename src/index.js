@@ -35,20 +35,19 @@ app.delete('/api/project/:name', (req, res, next) => {
 
 	res.status(200).send('success');
 })
-app.post('/api/chapter', chapterUpload.array('images', 10), (req, res) => {
-	const images = req.files;
+app.post('/api/chapter/:id', chapterUpload.array('images', 10), (req, res) => {
+	const image = req.file;
+	const imageId = parseInt(req.params.id);
+	const url = `${process.env.HOST}:${process.env.PORT}/${image.path}`;
+	const name = image.filename;
+	
+	const imageInfo = {
+		id: imageId,
+		url,
+		name
+	}
 
-	const imagesInfo = images.map(image => {
-		const url = `${process.env.HOST}:${process.env.PORT}/${image.path}`;
-		const name = image.filename;
-
-		return {
-			url,
-			name
-		}
-	})
-
-	res.status(200).json({ imagesInfo });
+	res.status(200).json({ imageInfo });
 })
 app.delete('/api/chapter/:name', (req, res, next) => {
 	const filename = req.params.name;
