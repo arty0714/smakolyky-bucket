@@ -1,13 +1,14 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import fs from 'fs';
-import { projectUpload } from './utils/multer.js';
+import { projectUpload, chapterUpload } from './utils/multer.js';
 
 dotenv.config();
 
 const app = express();
 
 app.use('/projects', express.static('projects'))
+app.use('/chapters', express.static('chapters'))
 
 app.post('/api/project', projectUpload.single('image'), (req, res) => {
 	const url = `${process.env.HOST}:${process.env.PORT}/${req.file.path}`
@@ -34,6 +35,36 @@ app.delete('/api/project/:name', (req, res, next) => {
 
 	res.status(200).send('success');
 })
-app.post('/api/chapter', (req, res) => {})
+app.post('/api/chapter', chapterUpload.array('images', 10), (req, res) => {
+	const images = req.files;
+
+	const imagesInfo = images.map(image => {
+		const url = `${process.env.HOST}:${process.env.PORT}/${image.path}`;
+		const name = image.filename;
+
+		return {
+			url,
+			name
+		}
+	})
+
+	res.status(200).json({ imagesInfo });
+})
+app.delete('/api/chapter/:name', (req, res, next) => {
+	const filename = req.params.name;
+	const dir = './chapters';
+	let error = null;
+
+	fs.unlink(`${dir}/${filename}`, (err) => {
+		error = err;
+	});
+
+	if (error) {
+		res.status(400).send(err);
+		return;
+	}
+
+	res.status(200).send('success');
+})
 
 app.listen(5001, console.log('bucket is up'));
