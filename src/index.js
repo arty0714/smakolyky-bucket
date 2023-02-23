@@ -13,7 +13,7 @@ app.use('/projects', express.static('projects'))
 app.use('/chapters', express.static('chapters'))
 
 app.post('/api/project', projectUpload.single('image'), (req, res) => {
-	const url = `${process.env.HOST}:${process.env.PORT}/${req.file.path}`
+	const url = `http://${process.env.HOST}:${process.env.PORT}/${req.file.path}`
 
 	console.log(req.file);
 	res.status(200).json({ imageInfo: {
@@ -39,7 +39,7 @@ app.delete('/api/project/:name', (req, res, next) => {
 })
 app.post('/api/chapter', chapterUpload.single('image'), (req, res) => {
 	const image = req.file;
-	const url = `${process.env.HOST}:${process.env.PORT}/${image.path}`;
+	const url = `http://${process.env.HOST}:${process.env.PORT}/${image.path}`;
 	const name = image.filename;
 	
 	const imageInfo = {
@@ -66,4 +66,4 @@ app.delete('/api/chapter/:name', (req, res, next) => {
 	res.status(200).send('success');
 })
 
-app.listen(5001, console.log('bucket is up'));
+app.listen(process.env.PORT, console.log('bucket is up'));
