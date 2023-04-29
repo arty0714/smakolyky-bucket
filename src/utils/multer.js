@@ -3,9 +3,11 @@ import { v4 } from 'uuid';
 
 const projectStorage = multer.diskStorage({
 	destination: (req, file, cb) => {
+		console.log(file)
 		cb(null, 'projects');
 	},
 	filename: (req, file, cb) => {
+		console.log(file)
 		const newFileName = `${v4()}.${file.originalname}`;
 
 		cb(null, newFileName);
