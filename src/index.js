@@ -13,7 +13,7 @@ app.use('/projects', express.static('projects'))
 app.use('/chapters', express.static('chapters'))
 
 app.post('/api/project', projectUpload.single('image'), (req, res) => {
-	const url = `http://${process.env.HOST}:${process.env.PORT}/${req.file.path}`
+	const url = `https://${process.env.HOST}/${req.file.path}`
 
 	res.status(200).json({ imageInfo: {
 		url,
