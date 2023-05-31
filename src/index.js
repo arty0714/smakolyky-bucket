@@ -8,7 +8,8 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors())
+app.use(cors());
+
 app.use('/projects', express.static('projects'))
 app.use('/chapters', express.static('chapters'))
 
@@ -38,13 +39,14 @@ app.delete('/api/project/:name', (req, res, next) => {
 })
 app.post('/api/chapter', chapterUpload.single('image'), (req, res) => {
 	const image = req.file;
-	const url = `http://${process.env.HOST}:${process.env.PORT}/${image.path}`;
+	const url = `https://${process.env.HOST}/${image.path}`;
 	const name = image.filename;
 	
 	const imageInfo = {
 		url,
 		name
 	}
+	console.log(imageInfo);
 
 	res.status(200).json({ imageInfo });
 })
