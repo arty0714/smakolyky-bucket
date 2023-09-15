@@ -1,20 +1,22 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import fs from 'fs';
-import cors from 'cors'
+import cors from 'cors';
 import { projectUpload, chapterUpload } from './utils/multer.js';
+import bodyParser from 'body-parser';
 
 dotenv.config();
 
 const app = express();
 
 app.use(cors());
+app.use(bodyParser.json({ limit: '50mb'}));
 
 app.use('/projects', express.static('projects'))
 app.use('/chapters', express.static('chapters'))
 
 app.post('/api/project', projectUpload.single('image'), (req, res) => {
-	const url = `http://${process.env.VITE_BUCKET_HOST}/${req.file.path}`
+	const url = `${process.env.BUCKET_HOST}/${req.file.path}`
 
 	res.status(200).json({ imageInfo: {
 		url,
@@ -39,7 +41,7 @@ app.delete('/api/project/:name', (req, res, next) => {
 })
 app.post('/api/chapter', chapterUpload.single('image'), (req, res) => {
 	const image = req.file;
-	const url = `http://${process.env.VITE_BUCKET_HOST}/${image.path}`;
+	const url = `${process.env.BUCKET_HOST}/${image.path}`;
 	const name = image.filename;
 	
 	const imageInfo = {
